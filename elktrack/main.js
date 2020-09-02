@@ -105,6 +105,8 @@ class Moose {
   }
 
   update(canvas, dt) {
+    const maxSpeed = canvas.width / 4.3
+
     if (this.analyser) {
       this.analyser.getByteTimeDomainData(this.dataArray)
 
@@ -124,33 +126,33 @@ class Moose {
     }
 
     if (this.mode === 'preRight') {
-      const speed = canvas.width / 4.3
+      const posT = canvas.width - this.image.width - canvas.width / 15
+      const diff = posT - this.posX
+      const dir = (diff < 0 ? -1 : diff > 0 ? 1 : 0)
 
-      this.posX = this.posX - speed * dt / 1000
+      this.posX = this.posX + dir * Math.min(maxSpeed * dt / 1000, Math.abs(diff))
 
-      if (this.posX <= canvas.width - this.image.width - canvas.width / 15) {
+      if (this.posX == posT) {
         this.mode = 'stopRight'
       }
     } else if (this.mode === 'moveLeft') {
-      const speed = canvas.width / 4.3
-
-      this.posX = this.posX - speed * dt / 1000
+      this.posX = this.posX - maxSpeed * dt / 1000
 
       if (this.posX <= -this.image.width * 2) {
         this.mode = 'preLeft'
       }
     } else if (this.mode === 'preLeft') {
-      const speed = canvas.width / 4.3
+      const posT = canvas.width / 15
+      const diff = posT - this.posX
+      const dir = (diff < 0 ? -1 : diff > 0 ? 1 : 0)
 
-      this.posX = this.posX + speed * dt / 1000
+      this.posX = this.posX + dir * Math.min(maxSpeed * dt / 1000, Math.abs(diff))
 
-      if (this.posX >= canvas.width / 15) {
+      if (this.posX == posT) {
         this.mode = 'stopLeft'
       }
     } else if (this.mode === 'moveRight') {
-      const speed = canvas.width / 4.3
-
-      this.posX = this.posX + speed * dt / 1000
+      this.posX = this.posX + maxSpeed * dt / 1000
 
       if (this.posX >= canvas.width + this.image.width) {
         this.mode = 'preRight'
