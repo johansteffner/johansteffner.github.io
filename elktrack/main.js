@@ -160,11 +160,30 @@ class Moose {
     }
   }
 
-  draw(ctx) {
+  draw(ctx, canvas) {
     if (!this.image) {
       return
     }
 
+    const maxSpeed = canvas.width / 4.3
+
+    if (this.mode === 'moveLeft') {
+      ctx.globalAlpha = 0.5
+      ctx.drawImage(this.image, this.posX - maxSpeed / 250, this.posY - this.image.height / 2, this.image.width, this.image.height)
+      ctx.drawImage(this.image, this.posX + maxSpeed / 250, this.posY - this.image.height / 2, this.image.width, this.image.height)
+
+      ctx.globalAlpha = 0.25
+      ctx.drawImage(this.image, this.posX + maxSpeed / 125, this.posY - this.image.height / 2, this.image.width, this.image.height)
+    } else if (this.mode === 'moveRight') {
+      ctx.globalAlpha = 0.5
+      ctx.drawImage(this.image, this.posX + maxSpeed / 250, this.posY - this.image.height / 2, this.image.width, this.image.height)
+      ctx.drawImage(this.image, this.posX - maxSpeed / 250, this.posY - this.image.height / 2, this.image.width, this.image.height)
+
+      ctx.globalAlpha = 0.25
+      ctx.drawImage(this.image, this.posX - maxSpeed / 125, this.posY - this.image.height / 2, this.image.width, this.image.height)
+    }
+
+    ctx.globalAlpha = 1
     ctx.drawImage(this.image, this.posX, this.posY - this.image.height / 2, this.image.width, this.image.height)
   }
 }
