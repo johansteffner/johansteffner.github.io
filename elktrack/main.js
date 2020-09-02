@@ -44,7 +44,7 @@ class Game {
       el.draw(this.context, this.canvas)
     }
 
-    requestAnimationFrame(() => this.tick())
+    requestAnimationFrame(this.tick.bind(this))
   }
 }
 
@@ -90,7 +90,7 @@ class Moose {
     this.posY = 0
 
     this.image = new Image(333, 180)
-    this.image.src = 'moose.jpg';
+    this.image.src = 'elk.png';
 
     this.mode = 'preRight'
 
@@ -99,7 +99,7 @@ class Moose {
         const audioContext = new AudioContext()
         this.analyser = audioContext.createAnalyser()
         this.dataArray = new Uint8Array(this.analyser.frequencyBinCount)
-        
+
         audioContext.createMediaStreamSource(mediaStream).connect(this.analyser)
       })
   }
@@ -109,11 +109,11 @@ class Moose {
       this.analyser.getByteTimeDomainData(this.dataArray)
 
       if (Math.max(...this.dataArray) - Math.min(...this.dataArray) > 50) {
-          if (this.mode === 'stopRight') {
-            setTimeout(() => { this.mode = 'moveLeft' }, 2000)
-          } else if (this.mode === 'stopLeft') {
-            setTimeout(() => { this.mode = 'moveRight' }, 2000)
-          }
+        if (this.mode === 'stopRight') {
+          setTimeout(() => { this.mode = 'moveLeft' }, 2000)
+        } else if (this.mode === 'stopLeft') {
+          setTimeout(() => { this.mode = 'moveRight' }, 2000)
+        }
       }
     }
 
