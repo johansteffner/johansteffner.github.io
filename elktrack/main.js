@@ -25,20 +25,15 @@ class Game {
   }
 
   start() {
-    this.last = new Date()
-    this.tick()
+    this.tick(0)
   }
 
-  tick() {
+  tick(ts) {
     this.clear()
 
-    const t = new Date()
-
     for (const el of this.elements) {
-      el.update(this.canvas, t - this.last)
+      el.update(this.canvas, ts)
     }
-
-    this.last = t
 
     for (const el of this.elements) {
       el.draw(this.context, this.canvas)
@@ -93,6 +88,7 @@ class Moose {
     this.image.src = 'elk.png';
 
     this.mode = 'preRight'
+    this.last = 0
 
     navigator.mediaDevices.getUserMedia({ audio: true })
       .then(mediaStream => {
@@ -104,7 +100,9 @@ class Moose {
       })
   }
 
-  update(canvas, dt) {
+  update(canvas, ts) {
+    const dt = ts - this.last
+    this.last = ts
     const maxSpeed = canvas.width / 4.3
 
     if (this.analyser) {
