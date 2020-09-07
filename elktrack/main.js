@@ -5,6 +5,7 @@ class Game {
     this.scale = parseInt(window.localStorage.getItem('scale') || '100', 10)
     this.vpos = parseInt(window.localStorage.getItem('vpos') || '0', 10)
     this.sensitivity = parseInt(window.localStorage.getItem('sensitivity') || '75', 10)
+    this.distance = parseInt(window.localStorage.getItem('distance') || '350', 10)
 
     this.resize()
     window.addEventListener('resize', () => this.resize())
@@ -77,6 +78,24 @@ class Game {
     ui.appendChild(sensitivityLabel)
     ui.appendChild(sensitivitySlider)
 
+    const distanceLabel = document.createElement('label')
+
+    distanceLabel.innerHTML = 'distance'
+    distanceLabel.style.fontFamily = 'monospace'
+
+    const distanceSlider = document.createElement('input')
+
+    distanceSlider.type = 'number'
+    distanceSlider.value = `${this.distance}`
+
+    distanceSlider.onchange = e => {
+      this.distance = parseInt(e.target.value, 10)
+      window.localStorage.setItem('distance', this.distance)
+    }
+
+    ui.appendChild(distanceLabel)
+    ui.appendChild(distanceSlider)
+
     document.body.appendChild(this.canvas)
     document.body.appendChild(ui)
   }
@@ -125,7 +144,7 @@ class Game {
 class Background {
   update() { }
 
-  draw(ctx, canvas) {
+  draw(ctx) {
     ctx.fillStyle = '#fcd09f'
     ctx.fillRect(-10000, -10000 / 2, 20000, 10000)
   }
@@ -134,7 +153,7 @@ class Background {
 class Foreground {
   update() { }
 
-  draw(ctx, canvas) {
+  draw(ctx) {
     ctx.fillStyle = '#0b6623'
     ctx.fillRect(-10000, 0, 20000, 10000)
   }
@@ -147,7 +166,7 @@ class Wall {
 
   update() { }
 
-  draw(ctx, canvas) {
+  draw(ctx) {
     ctx.fillStyle = '#caa472'
 
     if (this.side === 'left') {
@@ -155,6 +174,24 @@ class Wall {
     } else {
       ctx.fillRect(1150, -100, 10000 - 1150, 250)
     }
+  }
+}
+
+class Ruler {
+  constructor(game) {
+    this.game = game
+  }
+
+  update() { }
+
+  draw(ctx) {
+    ctx.save()
+
+    ctx.fillStyle = '#000000'
+    ctx.resetTransform()
+    ctx.fillRect(10, 10, 10 / ((this.game.scale / 100) * this.game.distance / 8000), 10)
+
+    ctx.restore()
   }
 }
 
@@ -259,5 +296,6 @@ game.addElement(new Foreground(game))
 game.addElement(new Moose(game))
 game.addElement(new Wall(game, 'left'))
 game.addElement(new Wall(game, 'right'))
+game.addElement(new Ruler(game))
 
 game.start()
