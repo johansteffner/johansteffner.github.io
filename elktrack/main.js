@@ -187,9 +187,15 @@ class Ruler {
   draw(ctx) {
     ctx.save()
 
+    // full size track is 80m distance
+    const viewScale = this.game.distance / 8000
+    const renderScale = 100 / this.game.scale
+
     ctx.fillStyle = '#000000'
     ctx.resetTransform()
-    ctx.fillRect(10, 10, 10 / ((this.game.scale / 100) * this.game.distance / 8000), 10)
+
+    // dra a line that should be 10cm on the screen
+    ctx.fillRect(10, 10, 10 / viewScale / renderScale, 10)
 
     ctx.restore()
   }
