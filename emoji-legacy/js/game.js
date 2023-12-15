@@ -24,14 +24,6 @@ const init = (el) => {
 
   const mapEl = document.createElement("div");
 
-  const w = Math.floor(window.innerWidth / 32);
-  const h = Math.floor(window.innerHeight / 32);
-
-  viewport.width = w;
-  viewport.height = h - 1;
-  viewport.x = Math.floor((map[0].length - w) / 2);
-  viewport.y = Math.floor((map.length - h) / 2);
-
   mapEl.style.display = "grid";
 
   el.appendChild(mapEl);
@@ -45,6 +37,16 @@ const init = (el) => {
   const resize = () => {
     viewport.width = Math.floor(window.innerWidth / 32);
     viewport.height = Math.floor(window.innerHeight / 32) - 1;
+    viewport.x = Math.floor(player.x - viewport.width / 2);
+    viewport.y = Math.floor(player.y - viewport.height / 2);
+
+    // console.log({
+    //   viewport,
+    //   player,
+    // });
+
+    mapEl.innerHTML = "";
+
     mapEl.style.fontSize = `${window.innerWidth / viewport.width}px`;
     mapEl.style.gridTemplateColumns = `repeat(${viewport.width}, 1fr)`;
 
@@ -66,6 +68,7 @@ const init = (el) => {
   };
 
   resize();
+  window.addEventListener("resize", resize);
 
   const render = () => {
     for (let y = viewport.y; y < viewport.y + viewport.height; y++) {
@@ -177,8 +180,6 @@ const init = (el) => {
       move("right");
     }
   });
-
-  window.addEventListener("resize", resize);
 
   requestAnimationFrame(function gameLoop() {
     render();
