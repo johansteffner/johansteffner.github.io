@@ -76,7 +76,11 @@ const init = (el) => {
         const s = grid[y - viewport.y][x - viewport.x];
 
         if (player.x === x && player.y === y) {
-          s.textContent = "🐻";
+          if (player.isAlive) {
+            s.textContent = "🐻";
+          } else {
+            s.textContent = "💀";
+          }
         } else {
           s.textContent = tile;
         }
@@ -87,6 +91,10 @@ const init = (el) => {
   };
 
   const move = (direction) => {
+    if (!player.isAlive) {
+      return;
+    }
+
     let x = player.x,
       y = player.y;
 
@@ -100,13 +108,28 @@ const init = (el) => {
       x = Math.min(map[0].length - 1, x + 1);
     }
 
-    if (map[y][x] === "🌲") {
+    if (map[y][x] === "🎄") {
+      map[y][x] = "🌲";
+    } else if (map[y][x] === "🌲") {
+      map[y][x] = "🪵";
+    } else if (map[y][x] === "🪵") {
       map[y][x] = " ";
       player.tree++;
+      player.x = x;
+      player.y = y;
     } else if (map[y][x] === "🪨") {
+    } else if (map[y][x] === "🍒") {
+      player.lives++;
+      map[y][x] = " ";
+      player.x = x;
+      player.y = y;
     } else if (map[y][x] === "🧌") {
       if (Math.random() < 0.5) {
         player.lives--;
+
+        if (player.lives === 0) {
+          player.isAlive = false;
+        }
       } else {
         player.score++;
         map[y][x] = " ";
